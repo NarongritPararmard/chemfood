@@ -2,31 +2,86 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>Create Receipt</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 <body>
-    <h1>Create Sample Receipt</h1>
-    <form th:action="@{/receipts}" th:object="${receipt}" method="post">
-        <label>Company Name:</label>
-        <select th:field="*{company}" th:each="company : ${companies}">
-            <option th:value="${company}" th:text="${company.companyName}"></option>
-        </select>
-        
-        <label>Supplier Name:</label>
-        <input type="text" th:field="*{supplierName}" />
+<h1>Create Sample Receipt</h1>
+<form th:action="@{/receipts}" th:object="${receipt}" method="post">
 
-        <label>Contact:</label>
-        <input type="text" th:field="*{contact}" />
+    <!-- เลือก Company -->
+    <label for="company">Company Name:</label>
+    <select th:field="*{company}" id="company">
+        <option th:each="company : ${companies}"
+                th:value="${company.id}"
+                th:text="${company.companyName}">
+        </option>
+    </select>
 
-        <label>Date:</label>
-        <input type="date" th:field="*{date}" />
+    <!-- ชื่อ Supplier -->
+    <label for="supplierName">Supplier Name:</label>
+    <input type="text" id="supplierName" th:field="*{supplierName}" />
 
-        <label>Total Price:</label>
-        <input type="number" th:field="*{totalPrice}" />
+    <!-- Contact -->
+    <label for="contact">Contact:</label>
+    <input type="text" id="contact" th:field="*{contact}" />
 
-        <label>Total Amount:</label>
-        <input type="number" th:field="*{totalAmount}" />
+    <!-- วันที่ -->
+    <label for="date">Date:</label>
+    <input type="date" id="date" th:field="*{date}" />
 
-        <button type="submit">Save</button>
-    </form>
+    <!-- Total Price -->
+    <label for="totalPrice">Total Price:</label>
+    <input type="number" id="totalPrice" th:field="*{totalPrice}" />
+
+    <!-- Total Amount -->
+    <label for="totalAmount">Total Amount:</label>
+    <input type="number" id="totalAmount" th:field="*{totalAmount}" />
+
+    <!-- ค้นหาและเลือก Product -->
+    <label for="productSearch">Search Product:</label>
+    <input type="text" id="productSearch" placeholder="Search products by name..." />
+
+    <div id="productResults">
+        <!-- ผลลัพธ์การค้นหาจะปรากฏที่นี่ -->
+    </div>
+
+    <button type="submit">Save</button>
+</form>
+
+<script>
+    // ค้นหาสินค้าด้วย AJAX
+    $(document).ready(function () {
+        $('#productSearch').on('keyup', function () {
+            const query = $(this).val();
+
+            if (query.length > 2) { // ค้นหาเมื่อข้อความมีความยาวเกิน 2 ตัวอักษร
+                $.ajax({
+                    url: '/products/search',
+                    type: 'GET',
+                    data: { keyword: query },
+                    success: function (data) {
+                        // แสดงผลลัพธ์สินค้า
+                        let results = '<ul>';
+                        data.forEach(product => {
+                            results += `
+                                <li>
+                                    ${product.productName}
+                                    (${product.productCode}) -
+                                    ${product.price} USD
+                                </li>`;
+                        });
+                        results += '</ul>';
+                        $('#productResults').html(results);
+                    },
+                    error: function () {
+                        $('#productResults').html('<p>Error fetching data.</p>');
+                    }
+                });
+            } else {
+                $('#productResults').html('');
+            }
+        });
+    });
+</script>
 </body>
 </html>
