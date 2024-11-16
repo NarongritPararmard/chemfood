@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>หน้าหลัก</title>
+    <!-- เพิ่มการเชื่อมต่อกับ CSS หรือ Bootstrap -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        body {
+            background-color: #f4f9f4;
+            font-family: Arial, sans-serif;
+        }
+        .container {
+            margin-top: 50px;
+        }
+        h1 {
+            color: #4CAF50;
+            text-align: center;
+        }
+        .btn-custom {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        .btn-custom:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>ยินดีต้อนรับสู่เว็บไซต์ของเรา</h1>
+        <p class="text-center">กรุณาเลือกการดำเนินการที่ต้องการจากด้านล่าง:</p>
+
+        <div class="text-center">
+            <a href="/products" class="btn btn-custom">ดูสินค้า</a>
+            <a href="/companies" class="btn btn-custom">บริษัท</a>
+        </div>
+    </div>
+
+    <!-- เพิ่มการเชื่อมต่อกับ JavaScript (เช่น Bootstrap JS) -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>
