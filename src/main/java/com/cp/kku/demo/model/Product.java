@@ -32,8 +32,8 @@ public class Product {
     @Column(name = "image")  // ใช้ String เพื่อเก็บชื่อไฟล์ในฐานข้อมูล
     private String image;  // ชื่อไฟล์ที่จะเก็บในฐานข้อมูล (ไม่ใช่ MultipartFile)
 
-    @Transient  // ใช้ @Transient เพราะไม่ต้องการให้มันถูกบันทึกในฐานข้อมูล
-    private MultipartFile imageFile;  // ฟิลด์นี้สำหรับรับไฟล์จากฟอร์ม (ไม่ถูกบันทึกในฐานข้อมูล)
+    @Transient  // ใช้ @Transient เพื่อไม่บันทึกในฐานข้อมูล
+    private MultipartFile imageFile;  // ใช้ MultipartFile เพื่อรับไฟล์จากฟอร์ม
 
     // Getters and Setters
 
