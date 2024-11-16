@@ -4,6 +4,16 @@
     <title>Product List</title>
 </head>
 <body>
+<div class="container mt-4">
+    <!-- แสดงข้อความ success หรือ error -->
+    <div th:if="${message}" class="alert alert-success" id="message">
+        <span th:text="${message}"></span>
+    </div>
+
+    <div th:if="${error}" class="alert alert-danger" id="error">
+        <span th:text="${error}"></span>
+    </div>
+
     <h1>Product List</h1>
     <a href="/products/new">Add New Product</a>
     <table class="table table-striped">
@@ -35,11 +45,32 @@
             </td>
             <td>
                 <a th:href="@{/products/edit/{id}(id=${product.id})}">Edit</a>
-                <a th:href="@{/products/delete/{id}(id=${product.id})}">Delete</a>
+                <a th:href="@{/products/delete/{id}(id=${product.id})}" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete this product?');">Delete</a>
             </td>
         </tr>
         </tbody>
     </table>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.1.3/js/bootstrap.bundle.min.js"></script>
+<script>
+    // ตรวจสอบถ้ามีข้อความแจ้งเตือน
+    window.onload = function() {
+        var message = document.getElementById('message');
+        if (message) {
+            // ซ่อนข้อความหลังจาก 5 วินาที
+            setTimeout(function() {
+                message.style.display = 'none';
+            }, 5000); // 5000ms = 5 วินาที
+        }
 
+        var error = document.getElementById('error');
+        if (error) {
+            // ซ่อนข้อความหลังจาก 5 วินาที
+            setTimeout(function() {
+                error.style.display = 'none';
+            }, 5000); // 5000ms = 5 วินาที
+        }
+    };
+</script>
 </body>
 </html>

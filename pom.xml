@@ -78,6 +78,22 @@
 			<artifactId>reactor-test</artifactId>
 			<scope>test</scope>
 		</dependency>
+
+		<!-- Jakarta Validation -->
+		<dependency>
+			<groupId>jakarta.validation</groupId>
+			<artifactId>jakarta.validation-api</artifactId>
+			<version>3.0.2</version> <!-- หรือเวอร์ชันล่าสุดที่คุณต้องการ -->
+		</dependency>
+
+		<!-- สำหรับ Hibernate Validator -->
+		<dependency>
+			<groupId>org.hibernate.validator</groupId>
+			<artifactId>hibernate-validator</artifactId>
+			<version>6.2.0.Final</version> <!-- หรือเวอร์ชันล่าสุดที่คุณต้องการ -->
+		</dependency>
+
+
 	</dependencies>
 
 	<build>
