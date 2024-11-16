@@ -1,12 +1,7 @@
 package com.cp.kku.demo.model;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
-
+import jakarta.persistence.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @Entity
 @Table(name = "product")
@@ -34,8 +29,11 @@ public class Product {
     @Column(name = "unit")
     private String unit;
 
-    @Column(name = "image")
-    private String image;
+    @Column(name = "image")  // ใช้ String เพื่อเก็บชื่อไฟล์ในฐานข้อมูล
+    private String image;  // ชื่อไฟล์ที่จะเก็บในฐานข้อมูล (ไม่ใช่ MultipartFile)
+
+    @Transient  // ใช้ @Transient เพราะไม่ต้องการให้มันถูกบันทึกในฐานข้อมูล
+    private MultipartFile imageFile;  // ฟิลด์นี้สำหรับรับไฟล์จากฟอร์ม (ไม่ถูกบันทึกในฐานข้อมูล)
 
     // Getters and Setters
 
@@ -101,5 +99,13 @@ public class Product {
 
     public void setImage(String image) {
         this.image = image;
+    }
+
+    public MultipartFile getImageFile() {
+        return imageFile;
+    }
+
+    public void setImageFile(MultipartFile imageFile) {
+        this.imageFile = imageFile;
     }
 }

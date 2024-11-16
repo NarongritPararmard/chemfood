@@ -6,22 +6,40 @@
 <body>
     <h1>Product List</h1>
     <a href="/products/new">Add New Product</a>
-    <table>
+    <table class="table table-striped">
+        <thead>
         <tr>
             <th>ID</th>
             <th>Product Code</th>
             <th>Product Name</th>
+            <th>Description</th>
+            <th>Price</th>
+            <th>Quantity</th>
+            <th>Unit</th>
+            <th>Image</th>
             <th>Actions</th>
         </tr>
+        </thead>
+        <tbody>
         <tr th:each="product : ${products}">
             <td th:text="${product.id}"></td>
             <td th:text="${product.productCode}"></td>
             <td th:text="${product.productName}"></td>
+            <td th:text="${product.description}"></td> <!-- แสดง description -->
+            <td th:text="${product.price}"></td> <!-- แสดง price -->
+            <td th:text="${product.quantity}"></td> <!-- แสดง quantity -->
+            <td th:text="${product.unit}"></td> <!-- แสดง unit -->
+            <td>
+                <!-- แสดงภาพ -->
+                <img th:src="@{'/uploads/' + ${product.image}}" alt="Product Image" width="100">
+            </td>
             <td>
                 <a th:href="@{/products/edit/{id}(id=${product.id})}">Edit</a>
                 <a th:href="@{/products/delete/{id}(id=${product.id})}">Delete</a>
             </td>
         </tr>
+        </tbody>
     </table>
+
 </body>
 </html>
