@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Create Invoices</title>
+</head>
+<body>
+    <h1>Create Sample Invoice</h1>
+    <form th:action="@{/invoices}" th:object="${incoice}" method="post">
+        <label>Company Name:</label>
+        <select th:field="*{company}" th:each="company : ${companies}">
+            <option th:value="${company}" th:text="${company.companyName}"></option>
+        </select>
+        
+        <label>Supplier Name:</label>
+        <input type="text" th:field="*{supplierName}" />
+
+        <label>Contact:</label>
+        <input type="text" th:field="*{contact}" />
+
+        <label>Date:</label>
+        <input type="date" th:field="*{date}" />
+
+        <label>Total Price:</label>
+        <input type="number" th:field="*{totalPrice}" />
+
+        <label>Total Amount:</label>
+        <input type="number" th:field="*{totalAmount}" />
+
+        <button type="submit">Save</button>
+    </form>
+</body>
+</html>

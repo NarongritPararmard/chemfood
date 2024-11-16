@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Sample Invoices</title>
+</head>
+<body>
+    <h1>Sample Invoices</h1>
+    <a href="/receipts/new">Create New Invoices</a>
+    <table>
+        <tr>
+            <th>ID</th>
+            <th>Company Name</th>
+            <th>Supplier Name</th>
+            <th>Date</th>
+            <th>Total Price</th>
+            <th>Total Amount</th>
+        </tr>
+        <tr th:each="receipt : ${receipts}">
+            <td th:text="${receipt.id}">1</td>
+            <td th:text="${receipt.companyName}">Company A</td>
+            <td th:text="${receipt.supplierName}">Supplier X</td>
+            <td th:text="${receipt.date}">2024-11-15</td>
+            <td th:text="${receipt.totalPrice}">1000</td>
+            <td th:text="${receipt.totalAmount}">5</td>
+        </tr>
+    </table>
+</body>
+</html>
