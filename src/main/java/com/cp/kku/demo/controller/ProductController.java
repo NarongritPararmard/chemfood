@@ -114,15 +114,19 @@ public class ProductController {
 
     // บันทึกการแก้ไขข้อมูลสินค้า
     @PostMapping("/update/{id}")
-    public String saveProduct(@PathVariable("id") Long id,@ModelAttribute Product product,
+    public String saveProduct(@PathVariable("id") Long id,
+                              @ModelAttribute Product product,
                               @RequestParam(value = "imageFile", required = false) MultipartFile imageFile,
                               RedirectAttributes redirectAttributes) throws IOException {
-        // ตรวจสอบว่า imageFile มีค่าเป็นไฟล์หรือไม่
+        // ค้นหาสินค้าจากฐานข้อมูลเพื่อนำค่ารูปเดิมมาใช้ (กรณีไม่ได้แก้ไขรูป)
+        Product existingProduct = productRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid product ID: " + id));
+
         if (imageFile != null && !imageFile.isEmpty()) {
-            // ถ้ามีการเลือกไฟล์ ให้ทำการอัปโหลดไฟล์
+            // ถ้ามีการเลือกไฟล์ ให้ทำการอัปโหลดไฟล์ใหม่
             File dir = new File(uploadDir);
             if (!dir.exists()) {
-                dir.mkdirs();  // สร้างโฟลเดอร์ถ้ายังไม่มี
+                dir.mkdirs(); // สร้างโฟลเดอร์ถ้ายังไม่มี
             }
 
             // กำหนดชื่อไฟล์และที่เก็บไฟล์
@@ -130,17 +134,24 @@ public class ProductController {
             Path targetLocation = Paths.get(uploadDir + "/" + originalFilename);
             Files.copy(imageFile.getInputStream(), targetLocation, StandardCopyOption.REPLACE_EXISTING);
 
-            // กำหนดค่าภาพให้กับ Product
+            // อัปเดตค่ารูปภาพใหม่ในสินค้า
             product.setImage(originalFilename);
-            product.setId(id);
+        } else {
+            // ใช้รูปเดิมจากสินค้าในฐานข้อมูล
+            product.setImage(existingProduct.getImage());
         }
+
+        // ตั้งค่า ID ของสินค้า
+        product.setId(id);
 
         // บันทึกข้อมูลสินค้าในฐานข้อมูล
         productRepository.save(product);
 
         // รีไดเรคไปยังหน้ารายการสินค้า
+        redirectAttributes.addFlashAttribute("message", "Product updated successfully!");
         return "redirect:/products";
     }
+
 
     // ฟังก์ชั่นสำหรับบันทึกภาพที่อัพโหลด
     private String saveImage(MultipartFile imageFile) throws IOException {
