@@ -7,6 +7,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
@@ -59,6 +60,8 @@ public class ProductController {
 //        productRepository.save(product);
 //        return "redirect:/products";
 //    }
+
+
 
     @Value("${upload.dir}") // รับค่าจาก application.properties
     private String uploadDir;
@@ -167,9 +170,11 @@ public class ProductController {
         return fileName;
     }
 
-
-
-
+    @GetMapping("search")
+    public ResponseEntity<List<Product>> searchProducts(@RequestParam("keyword") String keyword) {
+        List<Product> products = productRepository.searchProducts(keyword);
+        return ResponseEntity.ok(products);
+    }
     // other CRUD methods
 
 }

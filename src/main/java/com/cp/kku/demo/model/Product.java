@@ -3,6 +3,8 @@ package com.cp.kku.demo.model;
 import jakarta.persistence.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
+
 @Entity
 @Table(name = "product")
 public class Product {
@@ -108,4 +110,5 @@ public class Product {
     public void setImageFile(MultipartFile imageFile) {
         this.imageFile = imageFile;
     }
+
 }
