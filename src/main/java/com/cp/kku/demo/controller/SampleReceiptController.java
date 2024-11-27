@@ -56,6 +56,47 @@ public class SampleReceiptController {
 //        sampleReceiptRepository.save(sampleReceipt);
 //        return "redirect:/receipts";
 //    }
+
+//    @PostMapping
+//    public String saveReceipt(@ModelAttribute SampleReceipt sampleReceipt) {
+//        // พิมพ์ข้อมูล Company
+//        sampleReceipt.setCompanyName(
+//                companyRepository.findById(sampleReceipt.getCompany().getId())
+//                        .map(Company::getCompanyName)
+//                        .orElse("Unknown Company")
+//        );
+//
+//        // ตรวจสอบและตั้งค่า ReceiptProduct
+//        if (sampleReceipt.getReceiptProducts() != null && !sampleReceipt.getReceiptProducts().isEmpty()) {
+//            System.out.println("Selected Products:");
+//            for (ReceiptProduct receiptProduct : sampleReceipt.getReceiptProducts()) {
+//                // ดึงข้อมูล Product จากฐานข้อมูลถ้ามีเพียง Product ID
+//                if (receiptProduct.getProduct() != null && receiptProduct.getProduct().getId() != null) {
+//                    Product product = productRepository.findById(receiptProduct.getProduct().getId())
+//                            .orElseThrow(() -> new RuntimeException("Product not found with ID: " + receiptProduct.getProduct().getId()));
+//                    receiptProduct.setProduct(product);
+//                }
+//
+//                // ตั้งค่า SampleReceipt ให้กับ ReceiptProduct
+//                receiptProduct.setSampleReceipt(sampleReceipt);
+//
+//                // พิมพ์ข้อมูลสินค้า
+//                System.out.println("Product Name: " + receiptProduct.getProduct().getProductName() +
+//                        ", Product Code: " + receiptProduct.getProduct().getProductCode() +
+//                        ", Quantity: " + receiptProduct.getRealQuantity() +
+//                        ", Price: " + receiptProduct.getRealPrice());
+//            }
+//        } else {
+//            System.out.println("No products selected.");
+//        }
+//
+//        // บันทึกข้อมูล SampleReceipt
+//        sampleReceiptRepository.save(sampleReceipt);
+//
+//        return "redirect:/receipts";
+//    }
+
+
 @PostMapping
 public String saveReceipt(@ModelAttribute SampleReceipt sampleReceipt) {
     // พิมพ์ข้อมูล Company
@@ -68,17 +109,20 @@ public String saveReceipt(@ModelAttribute SampleReceipt sampleReceipt) {
     if (sampleReceipt.getReceiptProducts() != null && !sampleReceipt.getReceiptProducts().isEmpty()) {
         System.out.println("Selected Products:");
         for (ReceiptProduct receiptProduct : sampleReceipt.getReceiptProducts()) {
-            System.out.println("Product Name: " + receiptProduct.getProduct().getProductName() +
-                    ", Product Code: " + receiptProduct.getProduct().getProductCode() +
-                    ", Quantity: " + receiptProduct.getProduct().getQuantity() +
-                    ", Price: " + receiptProduct.getProduct().getPrice());
+
+            // ตั้งค่า SampleReceipt ให้กับ ReceiptProduct แต่ละตัว
+            receiptProduct.setSampleReceipt(sampleReceipt);
+
+            System.out.println("Product Name: " + receiptProduct.getRealProductName() +
+                    ", Product Code: " + receiptProduct.getRealProductCode() +
+                    ", Quantity: " + receiptProduct.getRealQuantity()+
+                    ", Price: " + receiptProduct.getRealPrice());
         }
     } else {
         System.out.println("No products selected.");
     }
 
     // ตั้งค่า Company Name ก่อนบันทึก
-
     sampleReceipt.setCompanyName(companyRepository.findById(sampleReceipt.getCompany().getId()).get().getCompanyName());
 
     // บันทึกข้อมูล
