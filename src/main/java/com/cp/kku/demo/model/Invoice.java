@@ -2,16 +2,11 @@ package com.cp.kku.demo.model;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.Date;
+import java.util.List;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
+import org.springframework.format.annotation.DateTimeFormat;
 
 @Entity
 @Table(name = "invoice")
@@ -21,91 +16,98 @@ public class Invoice {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "company_name", nullable = false)
     private String companyName;
-
-    @Column(name = "customer_name", nullable = false)
     private String customerName;
-
-    @Column(name = "contact")
     private String contact;
 
-    @Column(name = "date")
-    private LocalDate date;
+    @Temporal(TemporalType.DATE)
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    private Date date;
 
-    @Column(name = "total_price", precision = 10, scale = 2)
-    private BigDecimal totalPrice;
+    private double totalPrice;
+    private int totalAmount;
 
-    @Column(name = "total_amount")
-    private Integer totalAmount;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "company_id", referencedColumnName = "id")
+    @ManyToOne
+    @JoinColumn(name = "company_id", nullable = false)
     private Company company;
 
+    @OneToMany(mappedBy = "invoice", cascade = CascadeType.ALL)
+    private List<InvoiceProduct> receiptProducts;
+
     // Getters and Setters
+
+
+    public Company getCompany() {
+        return company;
+    }
+
+    public Date getDate() {
+        return date;
+    }
+
+    public double getTotalPrice() {
+        return totalPrice;
+    }
+
+    public int getTotalAmount() {
+        return totalAmount;
+    }
 
     public Long getId() {
         return id;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public List<InvoiceProduct> getReceiptProducts() {
+        return receiptProducts;
     }
 
     public String getCompanyName() {
         return companyName;
     }
 
-    public void setCompanyName(String companyName) {
-        this.companyName = companyName;
+    public String getContact() {
+        return contact;
     }
 
     public String getCustomerName() {
         return customerName;
     }
 
-    public void setCustomerName(String customerName) {
-        this.customerName = customerName;
+    public void setCompany(Company company) {
+        this.company = company;
     }
 
-    public String getContact() {
-        return contact;
+    public void setCompanyName(String companyName) {
+        this.companyName = companyName;
     }
 
     public void setContact(String contact) {
         this.contact = contact;
     }
 
-    public LocalDate getDate() {
-        return date;
-    }
-
-    public void setDate(LocalDate date) {
+    public void setDate(Date date) {
         this.date = date;
     }
 
-    public BigDecimal getTotalPrice() {
-        return totalPrice;
+    public void setId(Long id) {
+        this.id = id;
     }
 
-    public void setTotalPrice(BigDecimal totalPrice) {
-        this.totalPrice = totalPrice;
+    public void setReceiptProducts(List<InvoiceProduct> receiptProducts) {
+        this.receiptProducts = receiptProducts;
     }
 
-    public Integer getTotalAmount() {
-        return totalAmount;
+    public void setCustomerName(String supplierName) {
+        this.customerName = supplierName;
     }
 
-    public void setTotalAmount(Integer totalAmount) {
+    public void setTotalAmount(int totalAmount) {
         this.totalAmount = totalAmount;
     }
 
-    public Company getCompany() {
-        return company;
+    public void setTotalPrice(double totalPrice) {
+        this.totalPrice = totalPrice;
     }
 
-    public void setCompany(Company company) {
-        this.company = company;
-    }
 }
+

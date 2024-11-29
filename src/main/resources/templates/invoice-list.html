@@ -5,7 +5,7 @@
 </head>
 <body>
     <h1>Sample Invoices</h1>
-    <a href="/receipts/new">Create New Invoices</a>
+    <a href="/invoices/new">Create New Invoices</a>
     <table>
         <tr>
             <th>ID</th>
@@ -15,13 +15,13 @@
             <th>Total Price</th>
             <th>Total Amount</th>
         </tr>
-        <tr th:each="receipt : ${receipts}">
-            <td th:text="${receipt.id}">1</td>
-            <td th:text="${receipt.companyName}">Company A</td>
-            <td th:text="${receipt.supplierName}">Supplier X</td>
-            <td th:text="${receipt.date}">2024-11-15</td>
-            <td th:text="${receipt.totalPrice}">1000</td>
-            <td th:text="${receipt.totalAmount}">5</td>
+        <tr th:each="invoice : ${invoices}">
+            <td th:text="${invoice.id}">1</td>
+            <td th:text="${invoice.companyName}">Company A</td>
+            <td th:text="${invoice.customerName}">Supplier X</td>
+            <td th:text="${invoice.date}">2024-11-15</td>
+            <td th:text="${invoice.totalPrice}">1000</td>
+            <td th:text="${invoice.totalAmount}">5</td>
         </tr>
     </table>
 </body>
