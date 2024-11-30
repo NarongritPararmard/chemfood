@@ -11,6 +11,7 @@ import com.cp.kku.demo.model.Company;
 import com.cp.kku.demo.model.Product;
 import com.cp.kku.demo.model.ReceiptProduct;
 import com.cp.kku.demo.repository.ProductRepository;
+import com.cp.kku.demo.repository.ReceiptProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -28,12 +29,14 @@ public class SampleReceiptController {
     private final SampleReceiptRepository sampleReceiptRepository;
     private final CompanyRepository companyRepository;
     private final ProductRepository productRepository;
+    private final ReceiptProductRepository receiptProductRepository;
 
     @Autowired
-    public SampleReceiptController(SampleReceiptRepository sampleReceiptRepository, CompanyRepository companyRepository, ProductRepository productRepository) {
+    public SampleReceiptController(SampleReceiptRepository sampleReceiptRepository, CompanyRepository companyRepository, ProductRepository productRepository, ReceiptProductRepository receiptProductRepository) {
         this.sampleReceiptRepository = sampleReceiptRepository;
         this.companyRepository = companyRepository;
         this.productRepository = productRepository;
+        this.receiptProductRepository = receiptProductRepository;
     }
 
     @GetMapping
@@ -50,53 +53,6 @@ public class SampleReceiptController {
         return "receipt-form";
     }
 
-//    @PostMapping
-//    public String saveReceipt(@ModelAttribute SampleReceipt sampleReceipt) {
-//        sampleReceipt.setCompanyName(companyRepository.findById(sampleReceipt.getCompany().getId()).get().getCompanyName());
-//        sampleReceiptRepository.save(sampleReceipt);
-//        return "redirect:/receipts";
-//    }
-
-//    @PostMapping
-//    public String saveReceipt(@ModelAttribute SampleReceipt sampleReceipt) {
-//        // พิมพ์ข้อมูล Company
-//        sampleReceipt.setCompanyName(
-//                companyRepository.findById(sampleReceipt.getCompany().getId())
-//                        .map(Company::getCompanyName)
-//                        .orElse("Unknown Company")
-//        );
-//
-//        // ตรวจสอบและตั้งค่า ReceiptProduct
-//        if (sampleReceipt.getReceiptProducts() != null && !sampleReceipt.getReceiptProducts().isEmpty()) {
-//            System.out.println("Selected Products:");
-//            for (ReceiptProduct receiptProduct : sampleReceipt.getReceiptProducts()) {
-//                // ดึงข้อมูล Product จากฐานข้อมูลถ้ามีเพียง Product ID
-//                if (receiptProduct.getProduct() != null && receiptProduct.getProduct().getId() != null) {
-//                    Product product = productRepository.findById(receiptProduct.getProduct().getId())
-//                            .orElseThrow(() -> new RuntimeException("Product not found with ID: " + receiptProduct.getProduct().getId()));
-//                    receiptProduct.setProduct(product);
-//                }
-//
-//                // ตั้งค่า SampleReceipt ให้กับ ReceiptProduct
-//                receiptProduct.setSampleReceipt(sampleReceipt);
-//
-//                // พิมพ์ข้อมูลสินค้า
-//                System.out.println("Product Name: " + receiptProduct.getProduct().getProductName() +
-//                        ", Product Code: " + receiptProduct.getProduct().getProductCode() +
-//                        ", Quantity: " + receiptProduct.getRealQuantity() +
-//                        ", Price: " + receiptProduct.getRealPrice());
-//            }
-//        } else {
-//            System.out.println("No products selected.");
-//        }
-//
-//        // บันทึกข้อมูล SampleReceipt
-//        sampleReceiptRepository.save(sampleReceipt);
-//
-//        return "redirect:/receipts";
-//    }
-
-
 @PostMapping
 public String saveReceipt(@ModelAttribute SampleReceipt sampleReceipt) {
     // พิมพ์ข้อมูล Company
@@ -104,6 +60,11 @@ public String saveReceipt(@ModelAttribute SampleReceipt sampleReceipt) {
 //    for (ReceiptProduct receiptProduct : sampleReceipt.getReceiptProducts()) {
 //        receiptProduct.setSampleReceipt(sampleReceipt); // ตั้งค่าความสัมพันธ์กับ SampleReceipt
 //    }
+    System.out.println(sampleReceipt.getSupplierName());
+    if(sampleReceipt.getSupplierName().isEmpty()) {
+        String supplierName = companyRepository.findByCompanyName(companyRepository.findById(sampleReceipt.getCompany().getId()).get().getCompanyName()).getRepresentativeName();
+        sampleReceipt.setSupplierName(supplierName);
+    }
 
     // พิมพ์ข้อมูลสินค้า
     if (sampleReceipt.getReceiptProducts() != null && !sampleReceipt.getReceiptProducts().isEmpty()) {
@@ -131,43 +92,6 @@ public String saveReceipt(@ModelAttribute SampleReceipt sampleReceipt) {
     return "redirect:/receipts";
 }
 
-//@PostMapping
-//public String createReceipt(@ModelAttribute("receipt") SampleReceipt receipt) {
-//    // Set company name from selected company
-//    Company company = companyRepository.findById(receipt.getCompany().getId())
-//            .orElseThrow(() -> new RuntimeException("Company not found"));
-//    receipt.setCompanyName(company.getCompanyName());
-//
-//    // Prepare receipt products
-//    List<ReceiptProduct> receiptProducts = new ArrayList<>();
-//    for (ReceiptProduct receiptProduct : receipt.getReceiptProducts()) {
-//        // Find original product
-//        Product originalProduct = productRepository.findById(receiptProduct.getProduct().getId())
-//                .orElseThrow(() -> new RuntimeException("Product not found"));
-//
-//        // Set real product details
-//        receiptProduct.setRealProductCode(originalProduct.getProductCode());
-//        receiptProduct.setRealProductName(originalProduct.getProductName());
-//        receiptProduct.setRealDescription(originalProduct.getDescription());
-//        receiptProduct.setRealPrice(originalProduct.getPrice());
-//        receiptProduct.setRealUnit(originalProduct.getUnit());
-//        receiptProduct.setRealImage(originalProduct.getImage());
-//
-//        // Set receipt reference
-//        receiptProduct.setSampleReceipt(receipt);
-//
-//        receiptProducts.add(receiptProduct);
-//    }
-//
-//    // Set receipt products
-//    receipt.setReceiptProducts(receiptProducts);
-//
-//    // Save receipt
-//    sampleReceiptRepository.save(receipt);
-//
-//    return "redirect:/receipts?success";
-//}
-
     // ตัวแปลงค่าจาก String (ID) เป็น Company
     @ModelAttribute
     public void addAttributes(Model model) {
@@ -190,4 +114,43 @@ public String saveReceipt(@ModelAttribute SampleReceipt sampleReceipt) {
     }
 
     // other CRUD methods
+
+    @GetMapping("/edit/{id}")
+    public String editReceiptForm(@PathVariable Long id, Model model) {
+        SampleReceipt receipt = sampleReceiptRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Receipt not found"));
+        model.addAttribute("receipt", receipt);
+        model.addAttribute("companies", companyRepository.findAll());
+        return "receipt-form";
+    }
+
+    @GetMapping("/delete/{id}")
+    public String deleteReceipt(@PathVariable Long id) {
+        sampleReceiptRepository.deleteById(id);
+        return "redirect:/receipts";
+    }
+
+    @GetMapping("/view/{id}")
+    public String viewReceipt(@PathVariable Long id, Model model) {
+        System.out.println(receiptProductRepository.findProductIdBySampleReceiptId(id));
+//        SampleReceipt receipt = sampleReceiptRepository.findById(id).get();
+
+        // หาผลิตภัณฑ์ที่เกี่ยวข้องกับใบเสร็จ
+        List<String> ids = receiptProductRepository.findProductIdBySampleReceiptId(id);
+        List<ReceiptProduct> receiptProducts = new ArrayList<>();
+        // แสดงข้อมูลใน Console
+        for (String i : ids) {
+            System.out.println(i);
+            receiptProducts.add(receiptProductRepository.findById(Long.parseLong(i)).get());
+//            products.add(productRepository.findById(Long.parseLong(i)).get());
+//            System.out.println(productRepository.findById(Long.parseLong(i)).get().getProductName());
+        }
+
+        model.addAttribute("receiptProducts", receiptProducts);
+
+        // สามารถดึงข้อมูล SampleReceipt ด้วย id ได้เช่นกันถ้าต้องการ
+        SampleReceipt receipt = sampleReceiptRepository.findById(id).orElse(null);
+        model.addAttribute("receipt", receipt);
+        return "receipt-details";
+    }
 }
