@@ -1,27 +1,138 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Companies</title>
+    <!-- เชื่อมต่อกับฟอนต์จาก Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        body {
+            background: linear-gradient(135deg, #d8f3dc, #b7e4c7, #95d5b2, #74c69d);
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            background-size: cover;
+            background-position: center;
+        }
+        .container {
+            margin-top: 50px;
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            max-width: 95%;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        h1 {
+            color: #40916c;
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 36px;
+        }
+        .btn-custom {
+            background-color: #52b788;
+            color: white;
+            border: none;
+            border-radius: 25px;
+            padding: 12px 25px;
+            font-size: 18px;
+            transition: all 0.3s ease;
+            display: inline-block;
+        }
+        .btn-custom:hover {
+            background-color: #40916c;
+            transform: scale(1.05);
+        }
+        table {
+            width: 100%;
+            margin-top: 30px;
+            border-collapse: collapse;
+        }
+        table th, table td {
+            padding: 20px;
+            text-align: left;
+            border: 1px solid #ddd;
+        }
+        table th {
+            background-color: #74c69d;
+            color: white;
+            font-size: 16px;
+        }
+        table tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        table tr:hover {
+            background-color: #e8f5e9;
+        }
+        .actions a {
+            margin-right: 15px;
+            text-decoration: none;
+            color: #40916c;
+            font-weight: bold;
+            font-size: 16px;
+        }
+        .actions a:hover {
+            text-decoration: underline;
+        }
+        .actions {
+            display: flex;
+            justify-content: start;
+            align-items: center;
+        }
+        .actions a + a {
+            margin-left: 20px;
+        }
+    </style>
 </head>
 <body>
-    <h1>Company List</h1>
-    <a href="/companies/new">Create New Company</a>
-    <table>
+<div class="container">
+    <h1>Company</h1>
+    <div class="text-right mb-4">
+        <a href="/companies/new" class="btn btn-custom"><i class="fas fa-plus"></i> Create New Company</a>
+    </div>
+    <table class="table">
+        <thead>
         <tr>
             <th>ID</th>
             <th>Company Name</th>
+            <th>Representative Name</th>
+            <th>Address</th>
             <th>Contact</th>
+            <th>Tax ID</th>
+            <th>Website</th>
+            <th>Status</th>
             <th>Actions</th>
         </tr>
+        </thead>
+        <tbody>
         <tr th:each="company : ${companies}">
             <td th:text="${company.id}"></td>
             <td th:text="${company.companyName}"></td>
+            <td th:text="${company.representativeName}"></td>
+            <td th:text="${company.address}"></td>
             <td th:text="${company.contact}"></td>
+            <td th:text="${company.taxId}"></td>
             <td>
-                <a th:href="@{/companies/edit/{id}(id=${company.id})}">Edit</a>
-                <a th:href="@{/companies/delete/{id}(id=${company.id})}">Delete</a>
+                <a th:href="${company.website}" target="_blank" th:text="${company.website}"></a>
+            </td>
+            <td th:text="${company.status}"></td>
+            <td class="actions">
+                <a th:href="@{/companies/edit/{id}(id=${company.id})}" class="text-primary"><i class="fas fa-edit"></i> Edit</a>
+                <a th:href="@{/companies/delete/{id}(id=${company.id})}" class="text-danger"><i class="fas fa-trash-alt"></i> Delete</a>
             </td>
         </tr>
+        </tbody>
     </table>
+</div>
+<!-- เชื่อมต่อกับ JavaScript -->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 </html>

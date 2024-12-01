@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Edit Receipt</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+<div class="container mt-5">
+  <h2 class="text-center mb-4">Edit Receipt Details</h2>
+
+  <form th:action="@{/receipts/edit/{id}(id=${receipt.id})}" method="post" enctype="multipart/form-data">
+    <div class="card">
+      <div class="card-body">
+        <!-- Receipt Details -->
+        <h3 class="mb-4">Receipt Information</h3>
+        <div class="mb-3">
+          <label for="companyName" class="form-label">Company Name</label>
+          <input type="text" id="companyName" name="companyName" class="form-control" th:value="${receipt.companyName}">
+        </div>
+        <div class="mb-3">
+          <label for="supplierName" class="form-label">Supplier Name</label>
+          <input type="text" id="supplierName" name="supplierName" class="form-control" th:value="${receipt.supplierName}">
+        </div>
+        <div class="mb-3">
+          <label for="contact" class="form-label">Contact</label>
+          <input type="text" id="contact" name="contact" class="form-control" th:value="${receipt.contact}">
+        </div>
+        <div class="mb-3">
+          <label for="date" class="form-label">Date</label>
+          <input type="date" id="date" name="date" class="form-control" th:value="${#dates.format(receipt.date, 'yyyy-MM-dd')}">
+        </div>
+        <div class="mb-3">
+          <label for="totalPrice" class="form-label">Total Price</label>
+          <input type="number" id="totalPrice" name="totalPrice" class="form-control" th:value="${receipt.totalPrice}">
+        </div>
+        <div class="mb-3">
+          <label for="totalAmount" class="form-label">Total Amount</label>
+          <input type="number" id="totalAmount" name="totalAmount" class="form-control" th:value="${receipt.totalAmount}">
+        </div>
+
+        <!-- Product Details Table -->
+        <h3 class="mb-4">Product Details</h3>
+        <table class="table table-bordered table-striped">
+          <thead>
+          <tr>
+            <th>#</th>
+            <th>Product Name</th>
+            <th>Description</th>
+            <th>Price</th>
+            <th>Quantity</th>
+            <th>Unit</th>
+            <th>Image</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr th:each="product, stat : ${receiptProducts}">
+            <td th:text="${stat.count}"></td>
+            <td>
+              <input type="text" name="realProductNames" th:value="${product.realProductName}" class="form-control">
+            </td>
+            <td>
+              <input type="text" name="realDescription" th:value="${product.realDescription}" class="form-control">
+            </td>
+            <td>
+              <input type="number" name="realPrice" th:value="${product.realPrice}" class="form-control">
+            </td>
+            <td>
+              <input type="number" name="realQuantity" th:value="${product.realQuantity}" class="form-control">
+            </td>
+            <td>
+              <input type="text" name="realUnit" th:value="${product.realUnit}" class="form-control">
+            </td>
+            <td>
+              <img th:src="@{'/uploads/' + ${product.realImage}}" alt="Product Image" width="50" class="img-thumbnail">
+            </td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="text-center mt-4">
+      <button type="submit" class="btn btn-primary">Save Receipt</button>
+      <a href="/receipts" class="btn btn-secondary">Cancel</a>
+    </div>
+  </form>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

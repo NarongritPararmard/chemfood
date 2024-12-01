@@ -3,10 +3,66 @@
 <head>
   <meta charset="UTF-8">
   <title>Create New Company</title>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+  <!-- เชื่อมต่อกับฟอนต์จาก Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <style>
+    body {
+      background: linear-gradient(135deg, #d8f3dc, #b7e4c7, #95d5b2, #74c69d);
+      font-family: 'Poppins', sans-serif; /* เปลี่ยนฟอนต์เป็น Poppins */
+      margin: 0;
+      padding: 0;
+    }
+    .container {
+      margin-top: 50px;
+      margin-bottom: 50px;
+      background: white;
+      border-radius: 20px;
+      padding: 40px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+      max-width: 95%;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    h2 {
+      color: #40916c;
+      font-weight: bold;
+      text-align: center;
+      margin-bottom: 30px;
+    }
+    .form-label {
+      font-weight: bold;
+    }
+    .btn-primary {
+      background-color: #52b788;
+      border-color: #52b788;
+      color: white;
+      font-size: 18px;
+      padding: 10px 20px;
+      border-radius: 25px;
+      transition: all 0.3s ease;
+    }
+    .btn-primary:hover {
+      background-color: #40916c;
+      transform: scale(1.05);
+    }
+    .btn-secondary {
+      background-color: #f1f1f1;
+      color: #40916c;
+      font-size: 18px;
+      padding: 10px 20px;
+      border-radius: 25px;
+      margin-left: 15px;
+      transition: all 0.3s ease;
+    }
+    .btn-secondary:hover {
+      background-color: #d8f3dc;
+      transform: scale(1.05);
+    }
+  </style>
 </head>
 <body>
-<div class="container mt-5">
+<div class="container">
   <h2>Create New Company</h2>
   <form th:action="@{/companies}" th:object="${company}" method="post">
     <div class="mb-3">
@@ -36,8 +92,8 @@
     <div class="mb-3">
       <label for="status" class="form-label">Status</label>
       <select class="form-select" id="status" name="status" th:field="*{status}">
-        <option value="ACTIVE">Active</option>
-        <option value="INACTIVE">Inactive</option>
+        <option value="SAMPLE_RECEIPT">Sample Receipt</option>
+        <option value="INVOICE">Invoice</option>
       </select>
     </div>
     <button type="submit" class="btn btn-primary">Save</button>

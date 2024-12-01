@@ -5,11 +5,10 @@ package com.cp.kku.demo.controller;
 import java.beans.PropertyEditorSupport;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
-import com.cp.kku.demo.model.Company;
-import com.cp.kku.demo.model.Product;
-import com.cp.kku.demo.model.ReceiptProduct;
+import com.cp.kku.demo.model.*;
 import com.cp.kku.demo.repository.ProductRepository;
 import com.cp.kku.demo.repository.ReceiptProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +17,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 
-import com.cp.kku.demo.model.SampleReceipt;
 import com.cp.kku.demo.repository.CompanyRepository;
 import com.cp.kku.demo.repository.SampleReceiptRepository;
 
@@ -117,12 +115,92 @@ public String saveReceipt(@ModelAttribute SampleReceipt sampleReceipt) {
 
     @GetMapping("/edit/{id}")
     public String editReceiptForm(@PathVariable Long id, Model model) {
+
+        // ดึงข้อมูลใบเสร็จที่ต้องการแก้ไข
         SampleReceipt receipt = sampleReceiptRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Receipt not found"));
+        System.out.println(receipt.getCompanyName());
+
+        // ดึงข้อมูลสินค้าในใบเสร็จที่เกี่ยวข้อง
+//        List<ReceiptProduct> receiptProducts = receipt.getReceiptProducts();
+
+        // หาผลิตภัณฑ์ที่เกี่ยวข้องกับใบเสร็จ
+        List<String> ids = receiptProductRepository.findProductIdBySampleReceiptId(id);
+        List<ReceiptProduct> receiptProducts = new ArrayList<>();
+        // แสดงข้อมูลใน Console
+        for (String i : ids) {
+            System.out.println(i);
+            receiptProducts.add(receiptProductRepository.findById(Long.parseLong(i)).get());
+        }
+        // เพิ่มข้อมูลลงในโมเดล
         model.addAttribute("receipt", receipt);
         model.addAttribute("companies", companyRepository.findAll());
-        return "receipt-form";
+        model.addAttribute("receiptProducts", receiptProducts); // เพิ่มข้อมูลสินค้าลงในโมเดล
+
+        return "receipt-edit";
     }
+
+    @PostMapping("/edit/{id}")
+    public String updateReceipt(
+            @PathVariable Long id,
+            @RequestParam String companyName,
+            @RequestParam String supplierName,
+            @RequestParam String contact,
+            @RequestParam String date,
+            @RequestParam double totalPrice,
+            @RequestParam double totalAmount,
+            @RequestParam List<String> realProductNames,
+            @RequestParam List<String> realDescriptions,
+            @RequestParam List<Double> realPrices,
+            @RequestParam List<Integer> realQuantities,
+            @RequestParam List<String> realUnits,
+            @RequestParam List<String> realImages) {
+
+        // Print the received data for debugging
+        System.out.println("Updating Receipt ID: " + id);
+        System.out.println("Company Name: " + companyName);
+        System.out.println("Supplier Name: " + supplierName);
+        System.out.println("Contact: " + contact);
+        System.out.println("Date: " + date);
+        System.out.println("Total Price: " + totalPrice);
+        System.out.println("Total Amount: " + totalAmount);
+        System.out.println("Product Names: " + realProductNames);
+        System.out.println("Descriptions: " + realDescriptions);
+        System.out.println("Prices: " + realPrices);
+        System.out.println("Quantities: " + realQuantities);
+        System.out.println("Units: " + realUnits);
+        System.out.println("Images: " + realImages);
+
+        // Update the receipt data
+//        Receipt updatedReceipt = receiptService.updateReceipt(id, companyName, supplierName, contact, date, totalPrice, totalAmount);
+
+        // Update the receipt products
+        for (int i = 0; i < realProductNames.size(); i++) {
+            ReceiptProduct product = new ReceiptProduct();
+            product.setRealProductName(realProductNames.get(i));
+            product.setRealDescription(realDescriptions.get(i));
+            product.setRealPrice(realPrices.get(i));
+            product.setRealQuantity(realQuantities.get(i));
+            product.setRealUnit(realUnits.get(i));
+            product.setRealImage(realImages.get(i));  // Assuming images are stored by path
+//            product.setReceipt(updatedReceipt);
+
+            // Save the product information
+//            receiptService.saveProduct(product);
+        }
+
+        // Redirect to the receipt list page after update
+        return "redirect:/receipts";
+    }
+
+
+//    @PostMapping("/edit/{id}")
+//    public String saveReceipt(@ModelAttribute ReceiptForm receiptForm) {
+//        // Handle saving the receipt and products data
+//        // Save receipt and products to database
+//        return "redirect:/receipts"; // Redirect to receipts list or success page
+//    }
+
 
     @GetMapping("/delete/{id}")
     public String deleteReceipt(@PathVariable Long id) {
@@ -142,6 +220,7 @@ public String saveReceipt(@ModelAttribute SampleReceipt sampleReceipt) {
         for (String i : ids) {
             System.out.println(i);
             receiptProducts.add(receiptProductRepository.findById(Long.parseLong(i)).get());
+
 //            products.add(productRepository.findById(Long.parseLong(i)).get());
 //            System.out.println(productRepository.findById(Long.parseLong(i)).get().getProductName());
         }
