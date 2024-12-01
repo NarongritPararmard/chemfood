@@ -1,12 +1,103 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sample Invoices</title>
+    <!-- Connect with Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        body {
+            background: linear-gradient(135deg, #d8f3dc, #b7e4c7, #95d5b2, #74c69d);
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            background-size: cover;
+            background-position: center;
+        }
+        .container {
+            margin-top: 50px;
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            max-width: 95%;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        h1 {
+            color: #40916c;
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 36px;
+        }
+        .btn-custom {
+            background-color: #52b788;
+            color: white;
+            border: none;
+            border-radius: 25px;
+            padding: 12px 25px;
+            font-size: 18px;
+            transition: all 0.3s ease;
+            display: inline-block;
+        }
+        .btn-custom:hover {
+            background-color: #40916c;
+            transform: scale(1.05);
+        }
+        .table {
+            width: 100%;
+            margin-top: 30px;
+            border-collapse: collapse;
+        }
+        .table th, .table td {
+            padding: 20px;
+            text-align: left;
+            border: 1px solid #ddd;
+        }
+        .table th {
+            background-color: #74c69d;
+            color: white;
+            font-size: 16px;
+        }
+        .table tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        .table tr:hover {
+            background-color: #e8f5e9;
+        }
+        .actions a {
+            margin-right: 15px;
+            text-decoration: none;
+            color: #40916c;
+            font-weight: bold;
+            font-size: 16px;
+        }
+        .actions a:hover {
+            text-decoration: underline;
+        }
+        .actions {
+            display: flex;
+            justify-content: start;
+            align-items: center;
+        }
+        .actions a + a {
+            margin-left: 20px;
+        }
+    </style>
 </head>
 <body>
+<div class="container">
     <h1>Sample Invoices</h1>
-    <a href="/invoices/new">Create New Invoices</a>
-    <table>
+    <div class="text-right mb-4">
+        <a href="/invoices/new" class="btn btn-custom"><i class="fas fa-plus"></i> Create New Invoice</a>
+    </div>
+    <table class="table">
+        <thead>
         <tr>
             <th>ID</th>
             <th>Company Name</th>
@@ -15,14 +106,21 @@
             <th>Total Price</th>
             <th>Total Amount</th>
         </tr>
+        </thead>
+        <tbody>
         <tr th:each="invoice : ${invoices}">
-            <td th:text="${invoice.id}">1</td>
-            <td th:text="${invoice.companyName}">Company A</td>
-            <td th:text="${invoice.customerName}">Supplier X</td>
-            <td th:text="${invoice.date}">2024-11-15</td>
-            <td th:text="${invoice.totalPrice}">1000</td>
-            <td th:text="${invoice.totalAmount}">5</td>
+            <td th:text="${invoice.id}"></td>
+            <td th:text="${invoice.companyName}"></td>
+            <td th:text="${invoice.customerName}"></td>
+            <td th:text="${#dates.format(invoice.date, 'yyyy-MM-dd')}"></td>
+            <td th:text="${invoice.totalPrice}"></td>
+            <td th:text="${invoice.totalAmount}"></td>
         </tr>
+        </tbody>
     </table>
+</div>
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 </html>
