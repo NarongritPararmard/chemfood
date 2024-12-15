@@ -111,9 +111,12 @@
                 <thead>
                 <tr>
                     <th>Product Name</th>
+                    <th>Description</th>
                     <th>Code</th>
                     <th>Price</th>
                     <th>Quantity</th>
+                    <th>Unit</th>
+                    <th>Image</th>
                     <th>Action</th>
                 </tr>
                 </thead>
@@ -162,6 +165,8 @@
                                 <div class="product-list"
                                      data-id="${product.id}"
                                      data-name="${product.productName}"
+                                     data-description="${product.description}"
+                                     data-image="${product.image}"
                                      data-code="${product.productCode}"
                                      data-price="${product.price}">
                                     ${product.productName} (${product.productCode}) - ${product.price} USD
@@ -191,10 +196,14 @@
             // Add to selected products array
             selectedProducts.push(product);
 
+            // Generate full path for the image
+            const imagePath = `/uploads/${product.image}`; // Adjust this to match your server's file structure
+
             // Add to table
             const rowHtml = `
                 <tr data-id="${product.id}">
                     <td>${product.name}</td>
+                    <td>${product.description}</td>
                     <td>${product.code}</td>
                     <td>${product.price}</td>
                     <td>
@@ -204,6 +213,9 @@
                                value="1"
                                data-id="${product.id}"
                                onchange="updateTotals()">
+                    </td>
+                    <td>
+                        <img src="${imagePath}" alt="${product.name}" style="width: 80px; height: auto;">
                     </td>
                     <td>
                         <button class="btn btn-danger" onclick="removeProduct(${product.id})">Remove</button>
@@ -223,6 +235,9 @@
                 <input type="hidden"
                        name="receiptProducts[${selectedProducts.length-1}].realProductName"
                        value="${product.name}">
+                <input type="hidden"
+                       name="receiptProducts[${selectedProducts.length-1}].realDescription"
+                       value="${product.description}">
                 <input type="hidden"
                        name="receiptProducts[${selectedProducts.length-1}].realPrice"
                        value="${product.price}">
