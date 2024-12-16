@@ -166,8 +166,9 @@
                                      data-id="${product.id}"
                                      data-name="${product.productName}"
                                      data-description="${product.description}"
-                                     data-image="${product.image}"
                                      data-code="${product.productCode}"
+                                     data-unit="${product.unit}"
+                                     data-image="${product.image}"
                                      data-price="${product.price}">
                                     ${product.productName} (${product.productCode}) - ${product.price} USD
                                 </div>`;
@@ -214,6 +215,7 @@
                                data-id="${product.id}"
                                onchange="updateTotals()">
                     </td>
+                    <td>${product.unit}</td>
                     <td>
                         <img src="${imagePath}" alt="${product.name}" style="width: 80px; height: auto;">
                     </td>
