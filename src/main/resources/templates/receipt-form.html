@@ -58,11 +58,6 @@
             background-color: #d8f3dc;
             transform: scale(1.05);
         }
-        .btn-danger {
-            font-size: 14px;
-            padding: 5px 10px;
-            border-radius: 15px;
-        }
         .product-list { cursor: pointer; }
         .product-list:hover { background-color: #f0f0f0; }
         #selectedProducts { margin-top: 20px; }
@@ -72,13 +67,18 @@
 <div class="container">
     <h1>Create Sample Receipt</h1>
     <form th:action="@{/receipts}" th:object="${receipt}" method="post">
+        <!-- Company Selection -->
         <div class="mb-3">
             <label for="company" class="form-label">Company Name:</label>
             <select th:field="*{company}" class="form-control" id="company">
-                <option th:each="company : ${companies}" th:value="${company.id}" th:text="${company.companyName}"></option>
+                <option th:each="company : ${companies}"
+                        th:value="${company.id}"
+                        th:text="${company.companyName}">
+                </option>
             </select>
         </div>
 
+        <!-- Supplier Details -->
         <div class="mb-3">
             <label for="supplierName" class="form-label">Supplier Name:</label>
             <input type="text" class="form-control" id="supplierName" th:field="*{supplierName}" />
@@ -94,33 +94,42 @@
             <input type="date" class="form-control" id="date" th:field="*{date}" />
         </div>
 
+        <!-- Product Search Section -->
         <div class="mb-3">
             <label for="productSearch" class="form-label">Search Product:</label>
             <input type="text" class="form-control" id="productSearch" placeholder="Search products..." />
-            <div id="productResults"></div>
+
+            <div id="productResults">
+                <!-- Search results will appear here -->
+            </div>
         </div>
 
+        <!-- Selected Products -->
         <div id="selectedProducts">
             <h3>Selected Products</h3>
             <table class="table">
                 <thead>
                 <tr>
-                    <th>Image</th>
                     <th>Product Name</th>
+                    <th>Description</th>
                     <th>Code</th>
                     <th>Price</th>
                     <th>Quantity</th>
                     <th>Unit</th>
-                    <th>Description</th>
+                    <th>Image</th>
                     <th>Action</th>
                 </tr>
                 </thead>
-                <tbody id="productTableBody"></tbody>
+                <tbody id="productTableBody">
+                <!-- Selected products will be added here -->
+                </tbody>
             </table>
         </div>
 
+        <!-- Hidden inputs for products -->
         <div id="hiddenProductInputs"></div>
 
+        <!-- Total Fields -->
         <div class="mb-3">
             <label for="totalPrice" class="form-label">Total Price:</label>
             <input type="number" class="form-control" id="totalPrice" th:field="*{totalPrice}" readonly />
@@ -143,6 +152,7 @@
 
         $('#productSearch').on('keyup', function() {
             const query = $(this).val();
+
             if (query.length > 0) {
                 $.ajax({
                     url: '/products/search',
@@ -155,15 +165,17 @@
                                 <div class="product-list"
                                      data-id="${product.id}"
                                      data-name="${product.productName}"
-                                     data-code="${product.productCode}"
                                      data-description="${product.description}"
-                                     data-price="${product.price}"
+                                     data-code="${product.productCode}"
                                      data-unit="${product.unit}"
-                                     data-image="${product.image}">
-                                    ${product.productName} (${product.productCode}) - ${product.price} BAHT
+                                     data-image="${product.image}"
+                                     data-price="${product.price}">
+                                    ${product.productName} (${product.productCode}) - ${product.price} USD
                                 </div>`;
                         });
                         $('#productResults').html(results);
+
+                        // Add click event to product results
                         $('.product-list').click(function() {
                             addProductToTable($(this).data());
                         });
@@ -175,47 +187,117 @@
         });
 
         function addProductToTable(product) {
-            if (selectedProducts.some(p => p.id === product.id)) {
+            // Check if product already exists
+            const exists = selectedProducts.some(p => p.id === product.id);
+            if (exists) {
                 alert('Product already added');
                 return;
             }
+
+            // Add to selected products array
             selectedProducts.push(product);
+
+            // Generate full path for the image
+            const imagePath = `/uploads/${product.image}`; // Adjust this to match your server's file structure
+
+            // Add to table
             const rowHtml = `
                 <tr data-id="${product.id}">
-                    <td><img src="/uploads/${product.image}" alt="Product Image" width="100"></td>
                     <td>${product.name}</td>
+                    <td>${product.description}</td>
                     <td>${product.code}</td>
                     <td>${product.price}</td>
                     <td>
-                        <input type="number" class="quantity-input form-control" min="1" value="1" data-id="${product.id}" onchange="updateTotals()">
+                        <input type="number"
+                               class="quantity-input form-control"
+                               min="1"
+                               value="1"
+                               data-id="${product.id}"
+                               onchange="updateTotals(this)">
                     </td>
                     <td>${product.unit}</td>
-                    <td>${product.description}</td>
+                    <td>
+                        <img src="${imagePath}" alt="${product.name}" style="width: 80px; height: auto;">
+                    </td>
                     <td>
                         <button class="btn btn-danger" onclick="removeProduct(${product.id})">Remove</button>
                     </td>
                 </tr>
             `;
             $('#productTableBody').append(rowHtml);
+
+            // Add hidden input for form submission
+            const hiddenInput = `
+                <input type="hidden"
+                       name="receiptProducts[${selectedProducts.length-1}].product.id"
+                       value="${product.id}">
+                <input type="hidden"
+                       name="receiptProducts[${selectedProducts.length-1}].realProductCode"
+                       value="${product.code}">
+                <input type="hidden"
+                       name="receiptProducts[${selectedProducts.length-1}].realProductName"
+                       value="${product.name}">
+                <input type="hidden"
+                       name="receiptProducts[${selectedProducts.length-1}].realDescription"
+                       value="${product.description}">
+                <input type="hidden"
+                       name="receiptProducts[${selectedProducts.length-1}].realPrice"
+                       value="${product.price}">
+                <input type="hidden"
+                       name="receiptProducts[${selectedProducts.length-1}].realQuantity"
+                       class="hidden-quantity"
+                       data-id="${product.id}"
+                       value="${product.quantity}">
+                <input type="hidden"
+                       name="receiptProducts[${selectedProducts.length-1}].realUnit"
+                       value="${product.unit}">
+                <input type="hidden"
+                       name="receiptProducts[${selectedProducts.length-1}].realImage"
+                       value="${product.image}">
+            `;
+            $('#hiddenProductInputs').append(hiddenInput);
+
             updateTotals();
         }
 
         window.removeProduct = function(productId) {
+            // Remove from table
             $(`#productTableBody tr[data-id="${productId}"]`).remove();
-            selectedProducts = selectedProducts.filter(p => p.id !== productId);
-            updateTotals();
-        };
 
-        window.updateTotals = function() {
-            let totalPrice = 0;
-            $('.quantity-input').each(function() {
-                const productId = $(this).data('id');
-                const quantity = parseInt($(this).val());
-                const price = selectedProducts.find(p => p.id === productId).price;
-                totalPrice += price * quantity;
-            });
-            $('#totalPrice').val(totalPrice);
-        };
+            // Remove from hidden inputs
+            $(`#hiddenProductInputs input[data-id="${productId}"]`).remove();
+
+            // Remove from selectedProducts array
+            selectedProducts = selectedProducts.filter(p => p.id !== productId);
+
+            updateTotals();
+        }
+
+        window.updateTotals = function(inputElement) {
+    let totalPrice = 0;
+    let totalAmount = 0;
+
+    // อัปเดต realQuantity ใน hidden input สำหรับแต่ละ product
+    $('.quantity-input').each(function() {
+        const quantity = parseInt($(this).val()); // จำนวนที่ผู้ใช้ป้อน
+        const productId = $(this).data('id'); // id ของ product
+        const hiddenQuantityField = $(`.hidden-quantity[data-id="${productId}"]`); // ค้นหา hidden field ที่ตรงกับ productId
+
+        // อัปเดตค่า realQuantity ใน hidden field
+        hiddenQuantityField.val(quantity);
+
+        const price = selectedProducts.find(p => p.id === productId).price; // หาราคา product จาก selectedProducts
+
+        // คำนวณยอดรวม
+        totalPrice += price * quantity;
+        totalAmount += quantity;
+    });
+
+    // อัปเดตค่า totalPrice และ totalAmount ที่แสดงในฟอร์ม
+    $('#totalPrice').val(totalPrice);
+    $('#totalAmount').val(totalAmount);
+}
+
     });
 </script>
 </body>
