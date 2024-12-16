@@ -213,7 +213,7 @@
                                min="1"
                                value="1"
                                data-id="${product.id}"
-                               onchange="updateTotals()">
+                               onchange="updateTotals(this)">
                     </td>
                     <td>${product.unit}</td>
                     <td>
@@ -247,7 +247,7 @@
                        name="receiptProducts[${selectedProducts.length-1}].realQuantity"
                        class="hidden-quantity"
                        data-id="${product.id}"
-                       value="1">
+                       value="${product.quantity}">
                 <input type="hidden"
                        name="receiptProducts[${selectedProducts.length-1}].realUnit"
                        value="${product.unit}">
@@ -273,22 +273,31 @@
             updateTotals();
         }
 
-        window.updateTotals = function() {
-            let totalPrice = 0;
-            let totalAmount = 0;
+        window.updateTotals = function(inputElement) {
+    let totalPrice = 0;
+    let totalAmount = 0;
 
-            $('.quantity-input').each(function() {
-                const productId = $(this).data('id');
-                const quantity = parseInt($(this).val());
-                const price = selectedProducts.find(p => p.id === productId).price;
+    // อัปเดต realQuantity ใน hidden input สำหรับแต่ละ product
+    $('.quantity-input').each(function() {
+        const quantity = parseInt($(this).val()); // จำนวนที่ผู้ใช้ป้อน
+        const productId = $(this).data('id'); // id ของ product
+        const hiddenQuantityField = $(`.hidden-quantity[data-id="${productId}"]`); // ค้นหา hidden field ที่ตรงกับ productId
 
-                totalPrice += price * quantity;
-                totalAmount += quantity;
-            });
+        // อัปเดตค่า realQuantity ใน hidden field
+        hiddenQuantityField.val(quantity);
 
-            $('#totalPrice').val(totalPrice);
-            $('#totalAmount').val(totalAmount);
-        }
+        const price = selectedProducts.find(p => p.id === productId).price; // หาราคา product จาก selectedProducts
+
+        // คำนวณยอดรวม
+        totalPrice += price * quantity;
+        totalAmount += quantity;
+    });
+
+    // อัปเดตค่า totalPrice และ totalAmount ที่แสดงในฟอร์ม
+    $('#totalPrice').val(totalPrice);
+    $('#totalAmount').val(totalAmount);
+}
+
     });
 </script>
 </body>
