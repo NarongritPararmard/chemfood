@@ -112,33 +112,33 @@ public String saveReceipt(@ModelAttribute SampleReceipt sampleReceipt) {
     }
 
     // other CRUD methods
-
     @GetMapping("/edit/{id}")
     public String editReceiptForm(@PathVariable Long id, Model model) {
 
         // ดึงข้อมูลใบเสร็จที่ต้องการแก้ไข
         SampleReceipt receipt = sampleReceiptRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Receipt not found"));
-        System.out.println(receipt.getCompanyName());
 
-        // ดึงข้อมูลสินค้าในใบเสร็จที่เกี่ยวข้อง
-//        List<ReceiptProduct> receiptProducts = receipt.getReceiptProducts();
-
-        // หาผลิตภัณฑ์ที่เกี่ยวข้องกับใบเสร็จ
-        List<String> ids = receiptProductRepository.findProductIdBySampleReceiptId(id);
-        List<ReceiptProduct> receiptProducts = new ArrayList<>();
-        // แสดงข้อมูลใน Console
-        for (String i : ids) {
-            System.out.println(i);
-            receiptProducts.add(receiptProductRepository.findById(Long.parseLong(i)).get());
+        // ตรวจสอบว่า receiptProducts เป็น null หรือไม่ ถ้าเป็น null จะสร้างใหม่เป็น ArrayList
+        if (receipt.getReceiptProducts() == null) {
+            receipt.setReceiptProducts(new ArrayList<>());
         }
+
+        // ตรวจสอบว่ามีสินค้าผลิตภัณฑ์ในใบเสร็จหรือไม่
+        if (receipt.getReceiptProducts().size() > 1) {
+            System.out.println(receipt.getReceiptProducts().get(1).getRealProductCode());
+        } else {
+            System.out.println("No second product available");
+        }
+
         // เพิ่มข้อมูลลงในโมเดล
         model.addAttribute("receipt", receipt);
         model.addAttribute("companies", companyRepository.findAll());
-        model.addAttribute("receiptProducts", receiptProducts); // เพิ่มข้อมูลสินค้าลงในโมเดล
+        model.addAttribute("receiptProducts", receipt.getReceiptProducts());  // เพิ่มสินค้าของใบเสร็จลงในโมเดล
 
         return "receipt-edit";
     }
+
 
     @PostMapping("/edit/{id}")
     public String updateReceipt(
