@@ -48,7 +48,6 @@
         <th>Quantity</th>
         <th>Unit</th>
         <th>Image</th>
-        <th>Action</th>
       </tr>
       </thead>
       <tbody id="productTableBody">
@@ -61,22 +60,9 @@
         <td>
           <img th:src="@{'/uploads/' + ${product.realImage}}" alt="Product Image" width="50" class="img-thumbnail"><br>
           <input type="file" name="realImages" class="form-control">
-        </td>
-        <td><button type="button" class="btn btn-danger" onclick="removeProduct(${product.id})">Remove</button></td>
       </tr>
       </tbody>
     </table>
-
-    <!-- Total Price and Amount -->
-    <div class="mb-3">
-      <label for="totalPrice" class="form-label">Total Price</label>
-      <input type="number" step="0.01" id="totalPrice" name="totalPrice" class="form-control" th:value="${receipt.totalPrice}" readonly>
-    </div>
-    <div class="mb-3">
-      <label for="totalAmount" class="form-label">Total Amount</label>
-      <input type="number" step="0.01" id="totalAmount" name="totalAmount" class="form-control" th:value="${receipt.totalAmount}" readonly>
-    </div>
-
     <button type="submit" class="btn btn-primary">Update Receipt</button>
   </form>
 </div>
