@@ -3,10 +3,8 @@ package com.cp.kku.demo.controller;
 
 
 import java.beans.PropertyEditorSupport;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.time.LocalDate;
+import java.util.*;
 
 import com.cp.kku.demo.model.*;
 import com.cp.kku.demo.repository.ProductRepository;
@@ -58,10 +56,19 @@ public String saveReceipt(@ModelAttribute SampleReceipt sampleReceipt) {
 //    for (ReceiptProduct receiptProduct : sampleReceipt.getReceiptProducts()) {
 //        receiptProduct.setSampleReceipt(sampleReceipt); // ตั้งค่าความสัมพันธ์กับ SampleReceipt
 //    }
-    System.out.println(sampleReceipt.getSupplierName());
+//    System.out.println(sampleReceipt.getSupplierName());
     if(sampleReceipt.getSupplierName().isEmpty()) {
         String supplierName = companyRepository.findByCompanyName(companyRepository.findById(sampleReceipt.getCompany().getId()).get().getCompanyName()).getRepresentativeName();
         sampleReceipt.setSupplierName(supplierName);
+    }
+
+    if (sampleReceipt.getContact().isEmpty()) {
+        String contact = companyRepository.findByCompanyName(companyRepository.findById(sampleReceipt.getCompany().getId()).get().getCompanyName()).getContact();
+        sampleReceipt.setContact(contact);
+    }
+
+    if (sampleReceipt.getDate() == null) {
+        sampleReceipt.setDate(new Date());
     }
 
     // พิมพ์ข้อมูลสินค้า
