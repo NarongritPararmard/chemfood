@@ -32,6 +32,7 @@
     <div class="mb-3">
       <label for="productSearch" class="form-label">Search Product:</label>
       <input type="text" class="form-control" id="productSearch" placeholder="Search products..." />
+
       <div id="productResults">
         <!-- Search results will appear here -->
       </div>
@@ -70,133 +71,131 @@
 <!-- JavaScript for dynamic table interaction -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
-  // Initialize selected products array
-  let selectedProducts = [];
-
-  // Function to update totals based on the price and quantity of the products
-  function updateTotals() {
-    let totalPrice = 0;
-    let totalAmount = 0;
-
-    // Loop through all product rows and calculate the total price and total amount
-    $('tr').each(function() {
-      let price = parseFloat($(this).find('.price').val()) || 0;
-      let quantity = parseFloat($(this).find('.quantity').val()) || 0;
-      totalPrice += price * quantity;
-      totalAmount += quantity;
-    });
-
-    // Update the total fields in the form
-    $('#totalPrice').val(totalPrice.toFixed(2));
-    $('#totalAmount').val(totalAmount.toFixed(2));
-  }
-
-  // Remove product row
-  function removeProduct(id) {
-    $(`tr[data-id="${id}"]`).remove();
-    selectedProducts = selectedProducts.filter(p => p.id !== id); // Remove from selected products array
-    updateTotals(); // Update totals after removing a product
-  }
-
-  // Handle search input and display results
-  $('#productSearch').on('input', function() {
-    let query = $(this).val().toLowerCase();
-    if (query.length > 0) {
-      $.ajax({
-        url: '/products/search', // Endpoint to search for products
-        method: 'GET',
-        data: { query: query },
-        success: function(response) {
-          let resultsHtml = '';
-          response.products.forEach(function(product) {
-            resultsHtml += `<div class="product-result" onclick="addProductToTable(${JSON.stringify(product)})">
-                               <p>${product.name}</p>
-                             </div>`;
-          });
-          $('#productResults').html(resultsHtml);
-        }
-      });
-    } else {
-      $('#productResults').empty();
-    }
-  });
-
-  // Add product to the table
-  function addProductToTable(product) {
-    // Check if product already exists
-    const exists = selectedProducts.some(p => p.id === product.id);
-    if (exists) {
-      alert('Product already added');
-      return;
-    }
-
-    // Add to selected products array
-    selectedProducts.push(product);
-
-    // Generate full path for the image
-    const imagePath = `/uploads/${product.image}`; // Adjust this to match your server's file structure
-
-    // Add to table
-    const rowHtml = `
-      <tr data-id="${product.id}">
-        <td>${product.name}</td>
-        <td>${product.description}</td>
-        <td>${product.price}</td>
-        <td>
-          <input type="number"
-                 class="quantity-input form-control"
-                 min="1"
-                 value="1"
-                 data-id="${product.id}"
-                 onchange="updateTotals()">
-        </td>
-        <td>${product.unit}</td>
-        <td>
-          <img src="${imagePath}" alt="${product.name}" style="width: 80px; height: auto;">
-        </td>
-        <td>
-          <button class="btn btn-danger" onclick="removeProduct(${product.id})">Remove</button>
-        </td>
-      </tr>
-    `;
-    $('#productTableBody').append(rowHtml);
-
-    // Add hidden input for form submission
-    const hiddenInput = `
-      <input type="hidden"
-             name="receiptProducts[${selectedProducts.length-1}].product.id"
-             value="${product.id}">
-      <input type="hidden"
-             name="receiptProducts[${selectedProducts.length-1}].realProductCode"
-             value="${product.code}">
-      <input type="hidden"
-             name="receiptProducts[${selectedProducts.length-1}].realProductName"
-             value="${product.name}">
-      <input type="hidden"
-             name="receiptProducts[${selectedProducts.length-1}].realDescription"
-             value="${product.description}">
-      <input type="hidden"
-             name="receiptProducts[${selectedProducts.length-1}].realPrice"
-             value="${product.price}">
-      <input type="hidden"
-             name="receiptProducts[${selectedProducts.length-1}].realQuantity"
-             value="1">
-      <input type="hidden"
-             name="receiptProducts[${selectedProducts.length-1}].realUnit"
-             value="${product.unit}">
-      <input type="hidden"
-             name="receiptProducts[${selectedProducts.length-1}].realImage"
-             value="${product.image}">
-    `;
-    $('#hiddenProductInputs').append(hiddenInput);
-
-    updateTotals();
-  }
-
-  // Call updateTotals initially to set the correct total values
   $(document).ready(function() {
-    updateTotals();
-  });
+        let selectedProducts = [];
+
+        $('#productSearch').on('keyup', function() {
+            const query = $(this).val();
+
+            if (query.length > 0) {
+                $.ajax({
+                    url: '/products/search',
+                    type: 'GET',
+                    data: { keyword: query },
+                    success: function(data) {
+                        let results = '';
+                        data.forEach(product => {
+                            results += `
+                                <div class="product-list"
+                                     data-id="${product.id}"
+                                     data-name="${product.productName}"
+                                     data-description="${product.description}"
+                                     data-code="${product.productCode}"
+                                     data-unit="${product.unit}"
+                                     data-image="${product.image}"
+                                     data-price="${product.price}">
+                                    ${product.productName} (${product.productCode}) - ${product.price} USD
+                                </div>`;
+                        });
+                        $('#productResults').html(results);
+
+                        // Add click event to product results
+                        $('.product-list').click(function() {
+                            addProductToTable($(this).data());
+                        });
+                    }
+                });
+            } else {
+                $('#productResults').html('');
+            }
+        });
+
+        function addProductToTable(product) {
+            // Check if product already exists
+            const exists = selectedProducts.some(p => p.id === product.id);
+            if (exists) {
+                alert('Product already added');
+                return;
+            }
+
+            // Add to selected products array
+            selectedProducts.push(product);
+
+            // Generate full path for the image
+            const imagePath = `/uploads/${product.image}`; // Adjust this to match your server's file structure
+
+            // Add to table
+            const rowHtml = `
+                <tr data-id="${product.id}">
+                    <td>${product.name}</td>
+                    <td>${product.description}</td>
+                    <td>${product.code}</td>
+                    <td>${product.price}</td>
+                    <td>
+                        <input type="number"
+                               class="quantity-input form-control"
+                               min="1"
+                               value="1"
+                               data-id="${product.id}"
+                               onchange="updateTotals(this)">
+                    </td>
+                    <td>${product.unit}</td>
+                    <td>
+                        <img src="${imagePath}" alt="${product.name}" style="width: 80px; height: auto;">
+                    </td>
+                    <td>
+                        <button class="btn btn-danger" onclick="removeProduct(${product.id})">Remove</button>
+                    </td>
+                </tr>
+            `;
+            $('#productTableBody').append(rowHtml);
+
+            // Add hidden input for form submission
+            const hiddenInput = `
+                <input type="hidden"
+                       name="receiptProducts[${selectedProducts.length-1}].product.id"
+                       value="${product.id}">
+                <input type="hidden"
+                       name="receiptProducts[${selectedProducts.length-1}].realProductCode"
+                       value="${product.code}">
+                <input type="hidden"
+                       name="receiptProducts[${selectedProducts.length-1}].realProductName"
+                       value="${product.name}">
+                <input type="hidden"
+                       name="receiptProducts[${selectedProducts.length-1}].realDescription"
+                       value="${product.description}">
+                <input type="hidden"
+                       name="receiptProducts[${selectedProducts.length-1}].realPrice"
+                       value="${product.price}">
+                <input type="hidden"
+                       name="receiptProducts[${selectedProducts.length-1}].realQuantity"
+                       class="hidden-quantity"
+                       data-id="${product.id}"
+                       value="${product.quantity}">
+                <input type="hidden"
+                       name="receiptProducts[${selectedProducts.length-1}].realUnit"
+                       value="${product.unit}">
+                <input type="hidden"
+                       name="receiptProducts[${selectedProducts.length-1}].realImage"
+                       value="${product.image}">
+            `;
+            $('#hiddenProductInputs').append(hiddenInput);
+
+            updateTotals();
+        }
+
+        window.removeProduct = function(productId) {
+            // Remove from table
+            $(`#productTableBody tr[data-id="${productId}"]`).remove();
+
+            // Remove from hidden inputs
+            $(`#hiddenProductInputs input[data-id="${productId}"]`).remove();
+
+            // Remove from selectedProducts array
+            selectedProducts = selectedProducts.filter(p => p.id !== productId);
+
+            updateTotals();
+        }
 </script>
 </body>
 </html>

@@ -32,7 +32,7 @@ public class Invoice {
     private Company company;
 
     @OneToMany(mappedBy = "invoice", cascade = CascadeType.ALL)
-    private List<InvoiceProduct> receiptProducts;
+    private List<InvoiceProduct> invoiceProducts;
 
     // Getters and Setters
 
@@ -55,10 +55,6 @@ public class Invoice {
 
     public Long getId() {
         return id;
-    }
-
-    public List<InvoiceProduct> getReceiptProducts() {
-        return receiptProducts;
     }
 
     public String getCompanyName() {
@@ -93,10 +89,6 @@ public class Invoice {
         this.id = id;
     }
 
-    public void setReceiptProducts(List<InvoiceProduct> receiptProducts) {
-        this.receiptProducts = receiptProducts;
-    }
-
     public void setCustomerName(String supplierName) {
         this.customerName = supplierName;
     }
@@ -109,5 +101,12 @@ public class Invoice {
         this.totalPrice = totalPrice;
     }
 
+    public List<InvoiceProduct> getInvoiceProducts() {
+        return invoiceProducts;
+    }
+
+    public void setInvoiceProducts(List<InvoiceProduct> invoiceProducts) {
+        this.invoiceProducts = invoiceProducts;
+    }
 }
 

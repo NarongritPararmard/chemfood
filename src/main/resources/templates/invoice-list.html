@@ -92,19 +92,20 @@
 </head>
 <body>
 <div class="container">
-    <h1>Sample Invoices</h1>
+    <h1>Invoices</h1>
     <div class="text-right mb-4">
-        <a href="/invoices/new" class="btn btn-custom"><i class="fas fa-plus"></i> Create New Invoice</a>
+        <a href="/invoices/new" class="btn btn-custom"><i class="fas fa-plus"></i> Add New Invoice</a>
     </div>
     <table class="table">
         <thead>
         <tr>
             <th>ID</th>
             <th>Company Name</th>
-            <th>Supplier Name</th>
+            <th>Customer Name</th>
+            <th>Contact</th>
             <th>Date</th>
             <th>Total Price</th>
-            <th>Total Amount</th>
+            <th>Actions</th>
         </tr>
         </thead>
         <tbody>
@@ -112,9 +113,14 @@
             <td th:text="${invoice.id}"></td>
             <td th:text="${invoice.companyName}"></td>
             <td th:text="${invoice.customerName}"></td>
+            <td th:text="${invoice.contact}"></td>
             <td th:text="${#dates.format(invoice.date, 'yyyy-MM-dd')}"></td>
             <td th:text="${invoice.totalPrice}"></td>
-            <td th:text="${invoice.totalAmount}"></td>
+            <td class="actions">
+                <a th:href="@{/invoices/view/{id}(id=${invoice.id})}" class="text-primary"><i class="fas fa-eye"></i> View</a>
+<!--                <a th:href="@{/invoices/edit/{id}(id=${invoice.id})}" class="text-warning"><i class="fas fa-edit"></i> Edit</a>-->
+                <a th:href="@{/invoices/delete/{id}(id=${invoice.id})}" class="text-danger" onclick="return confirm('Are you sure?')"><i class="fas fa-trash-alt"></i> Delete</a>
+            </td>
         </tr>
         </tbody>
     </table>

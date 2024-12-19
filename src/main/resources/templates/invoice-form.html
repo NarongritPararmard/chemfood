@@ -1,90 +1,151 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
+    <meta charset="UTF-8">
     <title>Create Invoice</title>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <style>
+        body {
+            background: linear-gradient(135deg, #d8f3dc, #b7e4c7, #95d5b2, #74c69d);
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            margin-top: 50px;
+            margin-bottom: 50px;
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            max-width: 95%;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        h1 {
+            color: #40916c;
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .form-label {
+            font-weight: bold;
+        }
+        .btn-primary {
+            background-color: #52b788;
+            border-color: #52b788;
+            color: white;
+            font-size: 18px;
+            padding: 10px 20px;
+            border-radius: 25px;
+            transition: all 0.3s ease;
+        }
+        .btn-primary:hover {
+            background-color: #40916c;
+            transform: scale(1.05);
+        }
+        .btn-secondary {
+            background-color: #f1f1f1;
+            color: #40916c;
+            font-size: 18px;
+            padding: 10px 20px;
+            border-radius: 25px;
+            margin-left: 15px;
+            transition: all 0.3s ease;
+        }
+        .btn-secondary:hover {
+            background-color: #d8f3dc;
+            transform: scale(1.05);
+        }
         .product-list { cursor: pointer; }
         .product-list:hover { background-color: #f0f0f0; }
         #selectedProducts { margin-top: 20px; }
     </style>
 </head>
 <body>
-<h1>Create Invoice</h1>
-<form th:action="@{/invoices}" th:object="${invoice}" method="post">
-    <!-- Company Selection -->
-    <div>
-        <label for="company">Company Name:</label>
-        <select th:field="*{company}" id="company">
-            <option th:each="company : ${companies}"
-                    th:value="${company.id}"
-                    th:text="${company.companyName}">
-            </option>
-        </select>
-    </div>
-
-    <!-- Supplier Details -->
-    <div>
-        <label for="customerName">Supplier Name:</label>
-        <input type="text" id="customerName" th:field="*{customerName}" />
-    </div>
-
-    <div>
-        <label for="contact">Contact:</label>
-        <input type="text" id="contact" th:field="*{contact}" />
-    </div>
-
-    <div>
-        <label for="date">Date:</label>
-        <input type="date" id="date" th:field="*{date}" />
-    </div>
-
-    <!-- Product Search Section -->
-    <div>
-        <label for="productSearch">Search Product:</label>
-        <input type="text" id="productSearch" placeholder="Search products..." />
-
-        <div id="productResults">
-            <!-- Search results will appear here -->
+<div class="container">
+    <h1>Create Sample Invoice</h1>
+    <form th:action="@{/invoices}" th:object="${invoice}" method="post">
+        <!-- Company Selection -->
+        <div class="mb-3">
+            <label for="company" class="form-label">Company Name:</label>
+            <select th:field="*{company}" class="form-control" id="company">
+                <option th:each="company : ${companies}"
+                        th:value="${company.id}"
+                        th:text="${company.companyName}">
+                </option>
+            </select>
         </div>
-    </div>
 
-    <!-- Selected Products -->
-    <div id="selectedProducts">
-        <h3>Selected Products</h3>
-        <table id="productTable">
-            <thead>
-            <tr>
-                <th>Product Name</th>
-                <th>Code</th>
-                <th>Price</th>
-                <th>Quantity</th>
-                <th>Action</th>
-            </tr>
-            </thead>
-            <tbody id="productTableBody">
-            <!-- Selected products will be added here -->
-            </tbody>
-        </table>
-    </div>
+        <!-- Customer Details -->
+        <div class="mb-3">
+            <label for="customerName" class="form-label">Customer Name:</label>
+            <input type="text" class="form-control" id="customerName" th:field="*{customerName}" />
+        </div>
 
-    <!-- Hidden inputs for products -->
-    <div id="hiddenProductInputs"></div>
+        <div class="mb-3">
+            <label for="contact" class="form-label">Contact:</label>
+            <input type="text" class="form-control" id="contact" th:field="*{contact}" />
+        </div>
 
-    <!-- Total Fields -->
-    <div>
-        <label for="totalPrice">Total Price:</label>
-        <input type="number" id="totalPrice" th:field="*{totalPrice}" readonly />
-    </div>
+        <div class="mb-3">
+            <label for="date" class="form-label">Date:</label>
+            <input type="date" class="form-control" id="date" th:field="*{date}" />
+        </div>
 
-    <div>
-        <label for="totalAmount">Total Amount:</label>
-        <input type="number" id="totalAmount" th:field="*{totalAmount}" readonly />
-    </div>
+        <!-- Product Search Section -->
+        <div class="mb-3">
+            <label for="productSearch" class="form-label">Search Product:</label>
+            <input type="text" class="form-control" id="productSearch" placeholder="Search products..." />
 
-    <button type="submit">Save Receipt</button>
-</form>
+            <div id="productResults">
+                <!-- Search results will appear here -->
+            </div>
+        </div>
 
+        <!-- Selected Products -->
+        <div id="selectedProducts">
+            <h3>Selected Products</h3>
+            <table class="table">
+                <thead>
+                <tr>
+                    <th>Product Name</th>
+                    <th>Description</th>
+                    <th>Code</th>
+                    <th>Price</th>
+                    <th>Quantity</th>
+                    <th>Unit</th>
+                    <th>Image</th>
+                    <th>Action</th>
+                </tr>
+                </thead>
+                <tbody id="productTableBody">
+                <!-- Selected products will be added here -->
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Hidden inputs for products -->
+        <div id="hiddenProductInputs"></div>
+
+        <!-- Total Fields -->
+        <div class="mb-3">
+            <label for="totalPrice" class="form-label">Total Price:</label>
+            <input type="number" class="form-control" id="totalPrice" th:field="*{totalPrice}" readonly />
+        </div>
+
+        <div class="mb-3">
+            <label for="totalAmount" class="form-label">Total Amount:</label>
+            <input type="number" class="form-control" id="totalAmount" th:field="*{totalAmount}" readonly />
+        </div>
+
+        <button type="submit" class="btn btn-primary">Save Invoice</button>
+        <a href="/invoices" class="btn btn-secondary">Cancel</a>
+    </form>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script th:inline="javascript">
     $(document).ready(function() {
         let selectedProducts = [];
@@ -104,7 +165,10 @@
                                 <div class="product-list"
                                      data-id="${product.id}"
                                      data-name="${product.productName}"
+                                     data-description="${product.description}"
                                      data-code="${product.productCode}"
+                                     data-unit="${product.unit}"
+                                     data-image="${product.image}"
                                      data-price="${product.price}">
                                     ${product.productName} (${product.productCode}) - ${product.price} USD
                                 </div>`;
@@ -133,22 +197,30 @@
             // Add to selected products array
             selectedProducts.push(product);
 
+            // Generate full path for the image
+            const imagePath = `/uploads/${product.image}`; // Adjust this to match your server's file structure
+
             // Add to table
             const rowHtml = `
                 <tr data-id="${product.id}">
                     <td>${product.name}</td>
+                    <td>${product.description}</td>
                     <td>${product.code}</td>
                     <td>${product.price}</td>
                     <td>
                         <input type="number"
-                               class="quantity-input"
+                               class="quantity-input form-control"
                                min="1"
                                value="1"
                                data-id="${product.id}"
-                               onchange="updateTotals()">
+                               onchange="updateTotals(this)">
+                    </td>
+                    <td>${product.unit}</td>
+                    <td>
+                        <img src="${imagePath}" alt="${product.name}" style="width: 80px; height: auto;">
                     </td>
                     <td>
-                        <button onclick="removeProduct(${product.id})">Remove</button>
+                        <button class="btn btn-danger" onclick="removeProduct(${product.id})">Remove</button>
                     </td>
                 </tr>
             `;
@@ -157,28 +229,31 @@
             // Add hidden input for form submission
             const hiddenInput = `
                 <input type="hidden"
-       name="receiptProducts[${selectedProducts.length-1}].product.id"
-       value="${product.id}">
-<input type="hidden"
-       name="receiptProducts[${selectedProducts.length-1}].realProductCode"
-       value="${product.code}">
-<input type="hidden"
-       name="receiptProducts[${selectedProducts.length-1}].realProductName"
-       value="${product.name}">
-<input type="hidden"
-       name="receiptProducts[${selectedProducts.length-1}].realPrice"
-       value="${product.price}">
-<input type="hidden"
-       name="receiptProducts[${selectedProducts.length-1}].realQuantity"
-       class="hidden-quantity"
-       data-id="${product.id}"
-       value="1">
-<input type="hidden"
-       name="receiptProducts[${selectedProducts.length-1}].realUnit"
-       value="${product.unit}">
-<input type="hidden"
-       name="receiptProducts[${selectedProducts.length-1}].realImage"
-       value="${product.image}">
+                       name="invoiceProducts[${selectedProducts.length-1}].product.id"
+                       value="${product.id}">
+                <input type="hidden"
+                       name="invoiceProducts[${selectedProducts.length-1}].realProductCode"
+                       value="${product.code}">
+                <input type="hidden"
+                       name="invoiceProducts[${selectedProducts.length-1}].realProductName"
+                       value="${product.name}">
+                <input type="hidden"
+                       name="invoiceProducts[${selectedProducts.length-1}].realDescription"
+                       value="${product.description}">
+                <input type="hidden"
+                       name="invoiceProducts[${selectedProducts.length-1}].realPrice"
+                       value="${product.price}">
+                <input type="hidden"
+                       name="invoiceProducts[${selectedProducts.length-1}].realQuantity"
+                       class="hidden-quantity"
+                       data-id="${product.id}"
+                       value="${product.quantity}">
+                <input type="hidden"
+                       name="invoiceProducts[${selectedProducts.length-1}].realUnit"
+                       value="${product.unit}">
+                <input type="hidden"
+                       name="invoiceProducts[${selectedProducts.length-1}].realImage"
+                       value="${product.image}">
             `;
             $('#hiddenProductInputs').append(hiddenInput);
 
@@ -198,25 +273,31 @@
             updateTotals();
         }
 
-        window.updateTotals = function() {
-            let totalPrice = 0;
-            let totalAmount = 0;
+    window.updateTotals = function(inputElement) {
+    let totalPrice = 0;
+    let totalAmount = 0;
 
-            $('#productTableBody tr').each(function() {
-                const price = parseFloat($(this).find('td:nth-child(3)').text());
-                const quantity = parseInt($(this).find('.quantity-input').val());
+    // อัปเดต realQuantity ใน hidden input สำหรับแต่ละ product
+    $('.quantity-input').each(function() {
+        const quantity = parseInt($(this).val()); // จำนวนที่ผู้ใช้ป้อน
+        const productId = $(this).data('id'); // id ของ product
+        const hiddenQuantityField = $(`.hidden-quantity[data-id="${productId}"]`); // ค้นหา hidden field ที่ตรงกับ productId
 
-                // Update hidden quantity input
-                const productId = $(this).data('id');
-                $(`#hiddenProductInputs .hidden-quantity[data-id="${productId}"]`).val(quantity);
+        // อัปเดตค่า realQuantity ใน hidden field
+        hiddenQuantityField.val(quantity);
 
-                totalPrice += price * quantity;
-                totalAmount += quantity;
-            });
+        const price = selectedProducts.find(p => p.id === productId).price; // หาราคา product จาก selectedProducts
 
-            $('#totalPrice').val(totalPrice.toFixed(2));
-            $('#totalAmount').val(totalAmount);
-        }
+        // คำนวณยอดรวม
+        totalPrice += price * quantity;
+        totalAmount += quantity;
+    });
+
+    // อัปเดตค่า totalPrice และ totalAmount ที่แสดงในฟอร์ม
+    $('#totalPrice').val(totalPrice);
+    $('#totalAmount').val(totalAmount);
+}
+
     });
 </script>
 </body>

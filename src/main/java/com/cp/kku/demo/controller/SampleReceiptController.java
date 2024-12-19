@@ -5,6 +5,7 @@ package com.cp.kku.demo.controller;
 import java.beans.PropertyEditorSupport;
 import java.time.LocalDate;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import com.cp.kku.demo.model.*;
 import com.cp.kku.demo.repository.ProductRepository;
@@ -45,7 +46,10 @@ public class SampleReceiptController {
     @GetMapping("/new")
     public String createReceiptForm(Model model) {
         model.addAttribute("receipt", new SampleReceipt());
-        model.addAttribute("companies", companyRepository.findAll());
+        List<Company> companies = companyRepository.findAll().stream()
+                .filter(company -> "SAMPLE_RECEIPT".equals(company.getStatus()))
+                .collect(Collectors.toList());
+        model.addAttribute("companies", companies);
         return "receipt-form";
     }
 
@@ -141,7 +145,7 @@ public String saveReceipt(@ModelAttribute SampleReceipt sampleReceipt) {
         // เพิ่มข้อมูลลงในโมเดล
         model.addAttribute("receipt", receipt);
         model.addAttribute("companies", companyRepository.findAll());
-        model.addAttribute("receiptProducts", receipt.getReceiptProducts());  // เพิ่มสินค้าของใบเสร็จลงในโมเดล
+//        model.addAttribute("receiptProducts", receipt.getReceiptProducts());  // เพิ่มสินค้าของใบเสร็จลงในโมเดล
 
         return "receipt-edit";
     }
