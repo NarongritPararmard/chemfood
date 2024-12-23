@@ -64,6 +64,8 @@
     </style>
 </head>
 <body>
+<!-- เรียกใช้ Navbar -->
+<div th:replace="navbar.html :: navbar"></div>
 <div class="container">
     <h1>Create Sample Receipt</h1>
     <form th:action="@{/receipts}" th:object="${receipt}" method="post">

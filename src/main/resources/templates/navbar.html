@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Navbar</title>
+</head>
+<body>
+<div th:fragment="navbar">
+    <style>
+        /* CSS ที่ใช้เฉพาะใน navbar */
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #d8f3dc, #b7e4c7, #95d5b2, #74c69d);
+        }
+
+        .custom-navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #52b788; /* สีเขียวเข้ม */
+            padding: 10px 30px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            border-bottom: 3px solid #40916c; /* สีเขียวอ่อน */
+            transition: all 0.3s ease-in-out;
+        }
+
+        .custom-navbar .logo {
+            font-size: 2em;
+            font-weight: bold;
+            color: white;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .custom-navbar .menu {
+            display: flex;
+            gap: 25px;
+        }
+
+        .custom-navbar a {
+            color: white;
+            text-decoration: none;
+            padding: 12px 24px;
+            border-radius: 30px;
+            font-size: 1.1em;
+            font-weight: 500;
+            position: relative;
+            transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+        }
+
+        .custom-navbar a:hover {
+            background-color: #40916c; /* สีเขียวอ่อนเมื่อ hover */
+            transform: scale(1.1);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .custom-navbar a:active {
+            transform: scale(0.95);
+            box-shadow: none;
+        }
+
+        /* เพิ่ม responsive */
+        @media (max-width: 768px) {
+            .custom-navbar {
+                flex-direction: column;
+                align-items: flex-start;
+                padding: 15px 20px;
+            }
+
+            .custom-navbar .menu {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .custom-navbar a {
+                padding: 12px 18px;
+                font-size: 1.1em;
+            }
+        }
+
+        /* เพิ่มเอฟเฟ็กต์เมื่อเลื่อนหน้า */
+        .custom-navbar.scrolled {
+            background-color: #40916c; /* เปลี่ยนสีเมื่อเลื่อนลง */
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+    </style>
+    <nav class="custom-navbar">
+        <div class="logo">
+            <a th:href="@{/}">บริษัท</a>
+        </div>
+        <div class="menu">
+            <a th:href="@{/receipts}">ใบรับตัวอย่าง</a>
+            <a th:href="@{/invoices}">ใบส่งตัวอย่าง</a>
+            <a th:href="@{/products}">ดูสินค้า</a>
+            <a th:href="@{/companies}">บริษัท</a>
+        </div>
+    </nav>
+</div>
+</body>
+
+<script>
+    window.onscroll = function() {
+        var navbar = document.querySelector('.navbar');
+        if (document.body.scrollTop > 50 || document.documentElement.scrollTop > 50) {
+            navbar.classList.add('scrolled');
+        } else {
+            navbar.classList.remove('scrolled');
+        }
+    };
+</script>
+
+</html>

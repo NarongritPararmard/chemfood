@@ -97,6 +97,10 @@
     </style>
 </head>
 <body>
+
+<!-- เรียกใช้ Navbar -->
+<div th:replace="navbar.html :: navbar"></div>
+
 <div class="container">
     <!-- Success or error message -->
     <div th:if="${message}" class="alert alert-success" id="message">
